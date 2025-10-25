@@ -6,12 +6,17 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { MDXRemote, type MDXRemoteSerializeResult } from "next-mdx-remote";
-import { Render88x31Buttons } from "./88x31Buttons";
 import React from "react";
+import Render88x31Buttons from "./88x31Buttons";
+import BlogList from "./BlogList";
+import BlueskyIcon from "./icons/Bluesky";
+import GitHubIcon from "./icons/GitHub";
+import LinkedInIcon from "./icons/LinkedIn";
 
 function CustomLink(props: React.AnchorHTMLAttributes<HTMLAnchorElement>) {
-  let href = props.href;
+  const href = props.href;
 
+  // all internal links
   if (href?.startsWith("/")) {
     return (
       <Link href={href} {...props}>
@@ -20,7 +25,8 @@ function CustomLink(props: React.AnchorHTMLAttributes<HTMLAnchorElement>) {
     );
   }
 
-  if (href?.startsWith("#")) {
+  // anchor links not including footnote links
+  if (href?.startsWith("#") && !href.startsWith("#user-content-fn")) {
     return (
       <a {...props}>
         <span className="inline-flex items-center gap-1">
@@ -31,14 +37,69 @@ function CustomLink(props: React.AnchorHTMLAttributes<HTMLAnchorElement>) {
     );
   }
 
-  // fallback, assume it's an external link
+  // special link cases
+  if (href?.startsWith("https://bsky.app/")) {
+    return (
+      <a {...props} target="_blank" rel="noopener noreferrer">
+        <span className="inline-flex items-center gap-1">
+          <BlueskyIcon className="inline w-4 h-4" />
+          {props.children}
+        </span>
+      </a>
+    );
+  }
+
+  if (href?.startsWith("https://github.com/")) {
+    return (
+      <a {...props} target="_blank" rel="noopener noreferrer">
+        <span className="inline-flex items-center gap-1">
+          <GitHubIcon className="inline w-4 h-4" />
+          {props.children}
+        </span>
+      </a>
+    );
+  }
+
+  if (href?.startsWith("https://www.linkedin.com/")) {
+    return (
+      <a {...props} target="_blank" rel="noopener noreferrer">
+        <span className="inline-flex items-center gap-1">
+          <LinkedInIcon className="inline w-4 h-4" />
+          {props.children}
+        </span>
+      </a>
+    );
+  }
+
+  // external links in general that aren't covered above
+  if (href?.startsWith("http://") || href?.startsWith("https://")) {
+    return (
+      <a {...props} target="_blank" rel="noopener noreferrer">
+        <span className="inline-flex items-center gap-1">
+          {props.children}
+          <ExternalLinkIcon className="inline w-4 h-4" />
+        </span>
+      </a>
+    );
+  }
+
+  // fallback for other links (e.g., mailto:, tel:, etc.)
+  return <a {...props}>{props.children}</a>;
+}
+
+function SpotifyPlaylist({ playlistId }: { playlistId: string }) {
   return (
-    <a {...props} target="_blank" rel="noopener noreferrer">
-      <span className="inline-flex items-center gap-1">
-        {props.children}
-        <ExternalLinkIcon className="inline w-4 h-4" />
-      </span>
-    </a>
+    <iframe
+      title="Spotify Playlist"
+      data-testid="embed-iframe"
+      className="rounded-lg mb-4"
+      src={`https://open.spotify.com/embed/playlist/${playlistId}?utm_source=generator`}
+      width="100%"
+      height="152"
+      allowFullScreen={false}
+      allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+      loading="lazy"
+    ></iframe>
   );
 }
 
@@ -49,13 +110,13 @@ function slugify(text: string) {
     .trim()
     .replace(/\s+/g, "-") // Replace spaces with -
     .replace(/&/g, "-and-") // Replace & with 'and'
-    .replace(/[^\w\-]+/g, "") // Remove all non-word chars
-    .replace(/\-\-+/g, "-"); // Replace multiple - with single -
+    .replace(/[^\w-]+/g, "") // Remove all non-word chars
+    .replace(/--+/g, "-"); // Replace multiple - with single -
 }
 
 function createHeading(level: number) {
   const Heading = ({ children }: { children: string }) => {
-    let slug = slugify(children);
+    const slug = slugify(children);
     return React.createElement(
       `h${level}`,
       { id: slug },
@@ -73,12 +134,14 @@ function createHeading(level: number) {
   return Heading;
 }
 
-let components = {
+const components = {
   a: CustomLink,
   h1: createHeading(1),
   h2: createHeading(2),
   h3: createHeading(3),
   Render88x31Buttons: Render88x31Buttons,
+  BlogList: BlogList,
+  SpotifyPlaylist: SpotifyPlaylist,
 };
 
 export function MDX({ mdxSource }: { mdxSource: MDXRemoteSerializeResult }) {

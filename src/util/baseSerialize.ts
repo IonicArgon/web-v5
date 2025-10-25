@@ -1,10 +1,9 @@
-import remarkGfm from "remark-gfm";
-import remarkMath from "remark-math";
+import type { MDXRemoteSerializeResult } from "next-mdx-remote";
+import { serialize } from "next-mdx-remote/serialize";
 import rehypeHighlight from "rehype-highlight";
 import rehypeKatex from "rehype-katex";
-
-import { type MDXRemoteSerializeResult } from "next-mdx-remote";
-import { serialize } from "next-mdx-remote/serialize";
+import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
 
 export type MDXFrontmatter = {
   title: string;

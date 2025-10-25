@@ -23,7 +23,7 @@ export function formatDate(
     textAgo = "today";
   }
 
-  let fullDate = targetDate.toLocaleDateString("en-US", {
+  const fullDate = targetDate.toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
     day: "numeric",

@@ -1,6 +1,6 @@
+import { promises as fs } from "node:fs";
+import path from "node:path";
 import { NextResponse } from "next/server";
-import path from "path";
-import { promises as fs } from "fs";
 
 export async function GET() {
   try {
@@ -19,9 +19,9 @@ export async function GET() {
       }));
 
     return NextResponse.json(data, { status: 200 });
-  } catch (e: any) {
+  } catch (e: unknown) {
     return NextResponse.json(
-      { error: e?.message ?? "Failed to read buttons" },
+      { error: (e as Error)?.message ?? "Failed to read buttons" },
       { status: 500 },
     );
   }

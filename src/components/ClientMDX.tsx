@@ -1,8 +1,8 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Suspense } from "react";
 import type { MDXRemoteSerializeResult } from "next-mdx-remote";
+import { Suspense } from "react";
 import type { MDXFrontmatter } from "@/util/baseSerialize";
 
 const MDX = dynamic(() => import("./MDX").then((m) => ({ default: m.MDX })), {

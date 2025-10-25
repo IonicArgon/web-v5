@@ -8,7 +8,7 @@ type Button = {
   alt: string;
 };
 
-export function Render88x31Buttons() {
+export default function Render88x31Buttons() {
   const [buttons, setButtons] = React.useState<Button[] | null>(null);
   const [error, setError] = React.useState<string | null>(null);
 
@@ -20,8 +20,9 @@ export function Render88x31Buttons() {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = (await res.json()) as Button[];
         if (isMounted) setButtons(data);
-      } catch (e: any) {
-        if (isMounted) setError(e?.message ?? "Failed to load buttons");
+      } catch (e: unknown) {
+        if (isMounted)
+          setError((e as Error)?.message ?? "Failed to load buttons");
       }
     })();
     return () => {
@@ -37,10 +38,8 @@ export function Render88x31Buttons() {
     return (
       <div className="flex flex-wrap gap-1">
         {Array.from({ length: 12 }).map((_, i) => (
-          <div
-            key={i}
-            className="h-[31px] w-[88px] border border-dark"
-          />
+          // biome-ignore lint/suspicious/noArrayIndexKey: this is a placeholder
+          <div key={i} className="h-[31px] w-[88px] border border-dark" />
         ))}
       </div>
     );
@@ -49,12 +48,12 @@ export function Render88x31Buttons() {
   return (
     <div className="flex flex-wrap gap-1">
       {buttons
-      .sort((a, b) => a.src.localeCompare(b.src))
-      .map((button) => (
-        <div key={button.src}>
-          <Image src={button.src} alt={button.alt} width={88} height={31} />
-        </div>
-      ))}
+        .sort((a, b) => a.src.localeCompare(b.src))
+        .map((button) => (
+          <div key={button.src}>
+            <Image src={button.src} alt={button.alt} width={88} height={31} unoptimized />
+          </div>
+        ))}
     </div>
   );
 }

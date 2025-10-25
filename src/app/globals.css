@@ -12,16 +12,38 @@ body {
   @apply bg-white text-dark;
 }
 
+/* styles specific to MDX body content */
+
+/* avoid horizontal scrolling and force long words/URLs to wrap */
+.mdx {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* for links */
+.mdx a,
+.mdx a > span {
+  @apply text-primary underline underline-offset-2 transition-colors;
+  text-decoration-color: transparent;
+}
+
+.mdx a:hover,
+.mdx a:hover > span {
+  text-decoration-color: currentColor;
+}
+
+/* headings  */
 :where(.mdx) :is(h1, h2, h3) {
   @apply font-bold text-primary mb-3;
   position: relative;
 }
 
-:where(.mdx) :is(h1, h2, h3) a {
+/* no underline for anchor direct children of headings */
+.mdx :is(h1, h2, h3) > a {
   @apply no-underline text-primary transition-all;
 }
 
-:where(.mdx) :is(h1, h2, h3) a::before {
+.mdx :is(h1, h2, h3) > a::before {
   @apply text-secondary;
   content: "#";
   position: absolute;
@@ -29,7 +51,7 @@ body {
   transition: opacity 0.1s;
 }
 
-:where(.mdx) :is(h1, h2, h3):hover a::before {
+.mdx :is(h1, h2, h3):hover > a::before {
   opacity: 1;
 }
 
@@ -37,7 +59,7 @@ body {
   @apply text-3xl;
 }
 
-.mdx h1 a::before {
+.mdx h1 > a::before {
   margin-left: -1em;
   padding-right: 0.5em;
 }
@@ -46,7 +68,7 @@ body {
   @apply text-2xl;
 }
 
-.mdx h2 a::before {
+.mdx h2 > a::before {
   margin-left: -1.1em;
   padding-right: 0.5em;
 }
@@ -55,17 +77,23 @@ body {
   @apply text-xl;
 }
 
-.mdx h3 a::before {
+.mdx h3 > a::before {
   margin-left: -1.2em;
   padding-right: 0.5em;
 }
 
+/* general body */
 .mdx p {
   @apply mb-4;
 }
 
+.mdx blockquote {
+  @apply border-l-4 border-primary bg-secondary/20 pl-4 py-2 my-4;
+}
+
+/* tables */
 .mdx table {
-  @apply w-full border-collapse my-4;
+  @apply w-full border-collapse my-4 block overflow-x-auto;
 }
 
 .mdx th,
@@ -77,6 +105,34 @@ body {
   @apply bg-secondary font-bold;
 }
 
-.mdx blockquote {
-  @apply border-l-4 border-primary bg-secondary/20 pl-4 py-2 my-4;
+/* lists */
+.mdx ul {
+  @apply mb-2 pl-6 list-disc;
+}
+
+.mdx ul > li > ul {
+  /* for second level nesting */
+  @apply list-[circle];
+}
+
+.mdx ol {
+  @apply mb-2 pl-6 list-decimal;
+}
+
+/* code blocks */
+.mdx pre {
+  @apply overflow-x-auto my-4;
+}
+.mdx code {
+  @apply wrap-break-word;
+}
+
+/* images */
+.mdx img {
+  @apply max-w-full h-auto;
+}
+
+/* footnotes */
+.mdx .footnotes {
+  @apply border-t border-dark mt-6 pt-4 text-xs;
 }
