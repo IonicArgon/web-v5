@@ -1,0 +1,82 @@
+@import url("https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/base16/gruvbox-dark-hard.css");
+@import url("https://cdn.jsdelivr.net/npm/katex@0.16.25/dist/katex.min.css");
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #588157;
+  --color-secondary: #acc0ab;
+  --color-dark: #2d2d2a;
+}
+
+body {
+  @apply bg-white text-dark;
+}
+
+:where(.mdx) :is(h1, h2, h3) {
+  @apply font-bold text-primary mb-3;
+  position: relative;
+}
+
+:where(.mdx) :is(h1, h2, h3) a {
+  @apply no-underline text-primary transition-all;
+}
+
+:where(.mdx) :is(h1, h2, h3) a::before {
+  @apply text-secondary;
+  content: "#";
+  position: absolute;
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+
+:where(.mdx) :is(h1, h2, h3):hover a::before {
+  opacity: 1;
+}
+
+.mdx h1 {
+  @apply text-3xl;
+}
+
+.mdx h1 a::before {
+  margin-left: -1em;
+  padding-right: 0.5em;
+}
+
+.mdx h2 {
+  @apply text-2xl;
+}
+
+.mdx h2 a::before {
+  margin-left: -1.1em;
+  padding-right: 0.5em;
+}
+
+.mdx h3 {
+  @apply text-xl;
+}
+
+.mdx h3 a::before {
+  margin-left: -1.2em;
+  padding-right: 0.5em;
+}
+
+.mdx p {
+  @apply mb-4;
+}
+
+.mdx table {
+  @apply w-full border-collapse my-4;
+}
+
+.mdx th,
+.mdx td {
+  @apply border border-dark px-4 py-2 text-left;
+}
+
+.mdx th {
+  @apply bg-secondary font-bold;
+}
+
+.mdx blockquote {
+  @apply border-l-4 border-primary bg-secondary/20 pl-4 py-2 my-4;
+}
