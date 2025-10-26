@@ -1,6 +1,8 @@
 import type { MDXFrontmatter } from "@/util/baseSerialize";
 import { getBlogPostBySlug, getBlogPostSlugs } from "@/util/blogUtils";
 
+const LATEST_X_POSTS = 10;
+
 export async function GET(_request: Request) {
   const slugs = await getBlogPostSlugs();
   const blogPosts = (
@@ -17,6 +19,13 @@ export async function GET(_request: Request) {
   ).filter((post) => post !== null);
 
   const rssItems = blogPosts
+    .sort((a, b) => {
+      return (
+        new Date(b?.frontmatter.publishedAt).getTime() -
+        new Date(a?.frontmatter.publishedAt).getTime()
+      );
+    })
+    .slice(0, LATEST_X_POSTS) // latest 10 posts
     .map((post) => {
       const publishedDate = new Date(
         post.frontmatter.publishedAt,

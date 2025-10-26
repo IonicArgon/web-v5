@@ -4,7 +4,7 @@ import Parser from "rss-parser";
 
 const redis = Redis.fromEnv();
 const parser = new Parser();
-const REDIS_KEY = "last_posted_link";
+const REDIS_KEY = "last_posted_links";
 
 function getSiteUrl() {
   if (process.env.VERCEL_URL) {
@@ -43,18 +43,15 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const lastPostedLink = await redis.get<string>(REDIS_KEY);
-    let lastPostedIndex = -1;
-    if (lastPostedLink) {
-      lastPostedIndex = feed.items.findIndex(
-        (item) => item.link === lastPostedLink,
-      );
+    const lastPostedLinksString = await redis.get<string>(REDIS_KEY);
+    let lastPostedLinks: string[] = [];
+    if (lastPostedLinksString) {
+      lastPostedLinks = lastPostedLinksString.split(",");
     }
 
-    const newItems =
-      lastPostedIndex === -1
-        ? feed.items
-        : feed.items.slice(0, lastPostedIndex);
+    const newItems = feed.items.filter((item) => {
+      return item.link && !lastPostedLinks.includes(item.link);
+    });
 
     if (newItems.length === 0) {
       return NextResponse.json(
@@ -62,8 +59,6 @@ export async function GET(request: NextRequest) {
         { status: 200 },
       );
     }
-
-    const newestItemLink = newItems[0].link;
 
     let embeds = [];
     for (const item of newItems.reverse()) {
@@ -78,10 +73,11 @@ export async function GET(request: NextRequest) {
         title: title || "New Blog Post",
         url: link || siteUrl,
         description,
-        color: 588157,
+        color: 2067276,
         timestamp: new Date(pubDate || "").toISOString(),
         footer: {
           text: "IonicArgon - Marco Tan's Personal Website",
+          icon_url: `${siteUrl}/initials.png`,
         },
       });
     }
@@ -92,12 +88,20 @@ export async function GET(request: NextRequest) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ embeds }),
+      body: JSON.stringify({
+        content: "new blog post(s):",
+        embeds,
+      }),
     });
 
-    if (newestItemLink) {
-      await redis.set(REDIS_KEY, newestItemLink);
-    }
+    const updatedLinks = [
+      ...lastPostedLinks,
+      ...newItems.map((item) => item.link || ""),
+    ]
+      .filter((link) => link) // remove empty links
+      .slice(-10); // keep only the last 10 links (RSS feed limits to 10 items)
+
+    await redis.set(REDIS_KEY, updatedLinks.join(","));
 
     return NextResponse.json(
       { message: "New items posted to Discord", postedCount: newItems.length },
