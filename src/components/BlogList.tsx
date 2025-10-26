@@ -50,7 +50,7 @@ export default function BlogList() {
     let cancelled = false;
     async function load() {
       try {
-        const res = await fetch("/api/blog/posts");
+        const res = await fetch("/api/blog/posts", { cache: "no-store" });
         if (!res.ok) throw new Error(`Failed to fetch posts: ${res.status}`);
         const data: PostSummary[] = await res.json();
         if (!cancelled) setPosts(data);

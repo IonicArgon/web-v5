@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Quicksand } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import "./globals.css";
@@ -7,12 +7,29 @@ const quicksand = Quicksand({
   subsets: ["latin"],
 });
 
+export const viewport: Viewport = {
+  themeColor: "#588157",
+};
+
 export const metadata: Metadata = {
   title: {
     template: "%s | IonicArgon",
     default: "IonicArgon",
   },
   description: "Personal website and blog of Marco Tan.",
+  metadataBase: new URL("https://ionicargon.ca"),
+  openGraph: {
+    type: "website",
+    siteName: "IonicArgon",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
+  authors: [{ name: "Marco Tan", url: "https://ionicargon.ca" }],
+  creator: "Marco Tan",
+  keywords: ["IonicArgon", "Marco Tan", "blog", "software"],
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({

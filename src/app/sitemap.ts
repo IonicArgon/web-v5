@@ -9,46 +9,59 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const blogPostSlugs = await getBlogPostSlugs();
   const blogPosts = (
     await Promise.all(
-      blogPostSlugs.map(async (slug) => {
-        const frontmatter = (await getBlogPostBySlug(
+      blogPostSlugs.map(
+        async (
           slug,
-          true,
-        )) as MDXFrontmatter;
-        if (!frontmatter) return null;
-        return { slug, frontmatter: frontmatter };
-      }),
+        ): Promise<{ slug: string; frontmatter: MDXFrontmatter } | null> => {
+          const frontmatter = (await getBlogPostBySlug(
+            slug,
+            true,
+          )) as MDXFrontmatter;
+          if (!frontmatter) return null;
+          return { slug, frontmatter };
+        },
+      ),
     )
   )
-    .filter((post) => post !== null)
-    .map((post) => {
+    .filter(
+      (post): post is { slug: string; frontmatter: MDXFrontmatter } =>
+        post !== null,
+    )
+    .map((post): MetadataRoute.Sitemap[number] => {
       return {
-        url: `https://ionicargon.com/blog/${post.slug}`,
-        lastModified: new Date(post.frontmatter.publishedAt).toISOString(),
+        url: `https://ionicargon.ca/blog/${post.slug}`,
+        lastModified: new Date(
+          post.frontmatter.lastUpdatedAt ?? post.frontmatter.publishedAt,
+        ).toISOString(),
+        changeFrequency: "monthly",
         priority: 0.5,
       };
     });
 
   const otherPages = ["", "about", "blog"];
-  const otherPageEntries = (
-    await Promise.all(
-      otherPages.map(async (page) => {
-        const filePath = path.join(
-          process.cwd(),
-          "src",
-          "content",
-          `${page || "home"}.mdx`,
-        );
-        const fileContent = await fs.promises.readFile(filePath, "utf-8");
-        const mdxContent = await baseSerialize(fileContent);
-        const frontmatter = mdxContent.frontmatter as MDXFrontmatter;
-        return {
-          url: `https://ionicargon.com/${page}`,
-          lastModified: new Date(frontmatter.publishedAt).toISOString(),
-          priority: page === "" ? 1 : 0.8,
-        };
-      }),
-    )
-  ).filter((entry) => entry !== null);
+  const otherPageEntries: MetadataRoute.Sitemap = await Promise.all(
+    otherPages.map(async (page): Promise<MetadataRoute.Sitemap[number]> => {
+      const filePath = path.join(
+        process.cwd(),
+        "src",
+        "content",
+        `${page || "home"}.mdx`,
+      );
+      const fileContent = await fs.promises.readFile(filePath, "utf-8");
+      const mdxContent = await baseSerialize(fileContent);
+      const frontmatter = mdxContent.frontmatter as MDXFrontmatter;
+      const url = `https://ionicargon.ca/${page}`;
+      const isHome = page === "";
+      return {
+        url,
+        lastModified: new Date(
+          frontmatter.lastUpdatedAt ?? frontmatter.publishedAt,
+        ).toISOString(),
+        changeFrequency: isHome ? "daily" : "weekly",
+        priority: isHome ? 1 : 0.8,
+      };
+    }),
+  );
 
   return [...otherPageEntries, ...blogPosts];
 }

@@ -24,7 +24,24 @@ export async function generateMetadata({
   return {
     title: frontmatter.title,
     description: frontmatter.summary,
+    keywords: frontmatter.tags,
+    alternates: {
+      canonical: `https://ionicargon.ca/blog/${slug}`,
+    },
     openGraph: {
+      type: "article",
+      url: `https://ionicargon.ca/blog/${slug}`,
+      siteName: "IonicArgon",
+      locale: "en_US",
+      title: frontmatter.title,
+      description: frontmatter.summary,
+      publishedTime: frontmatter.publishedAt,
+      modifiedTime: frontmatter.lastUpdatedAt ?? frontmatter.publishedAt,
+      authors: ["Marco Tan"],
+    },
+    authors: [{ name: "Marco Tan", url: "https://ionicargon.ca" }],
+    twitter: {
+      card: "summary_large_image",
       title: frontmatter.title,
       description: frontmatter.summary,
     },

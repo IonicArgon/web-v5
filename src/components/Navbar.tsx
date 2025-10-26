@@ -121,7 +121,19 @@ export default function Navbar() {
           </li>
         </ul>
 
-        <div className="mt-auto mb-2">
+        <div className="mt-auto mb-2 flex flex-col gap-1 items-end">
+          <Link
+            href="/rss"
+            className="text-sm hover:text-primary transition-colors"
+          >
+            RSS Feed
+          </Link>
+          <Link
+            href="https://github.com/IonicArgon/web-v5"
+            className="text-sm hover:text-primary transition-colors"
+          >
+            Source Code
+          </Link>
           <CopyrightWithYear />
         </div>
       </nav>

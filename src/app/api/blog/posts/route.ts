@@ -11,6 +11,7 @@ export async function GET() {
           slug,
           true,
         )) as MDXFrontmatter;
+        if (!frontmatter) throw new Error(`Post not found: ${slug}`);
         return { slug, frontmatter };
       }),
     );

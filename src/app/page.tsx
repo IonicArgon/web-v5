@@ -17,8 +17,21 @@ export async function generateMetadata() {
   const frontmatter = mdxSource.frontmatter as MDXFrontmatter;
 
   return {
+    title: frontmatter.title,
     description: frontmatter.summary,
+    alternates: {
+      canonical: "https://ionicargon.ca/",
+    },
     openGraph: {
+      type: "website",
+      url: "https://ionicargon.ca/",
+      siteName: "IonicArgon",
+      locale: "en_US",
+      title: frontmatter.title,
+      description: frontmatter.summary,
+    },
+    twitter: {
+      card: "summary_large_image",
       title: frontmatter.title,
       description: frontmatter.summary,
     },

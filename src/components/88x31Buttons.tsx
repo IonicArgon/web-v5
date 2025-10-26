@@ -51,7 +51,13 @@ export default function Render88x31Buttons() {
         .sort((a, b) => a.src.localeCompare(b.src))
         .map((button) => (
           <div key={button.src}>
-            <Image src={button.src} alt={button.alt} width={88} height={31} unoptimized />
+            <Image
+              src={button.src}
+              alt={button.alt}
+              width={88}
+              height={31}
+              unoptimized
+            />
           </div>
         ))}
     </div>

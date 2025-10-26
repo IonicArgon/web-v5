@@ -21,17 +21,22 @@ export async function getBlogPostBySlug(
   const filePath = path.join(blogDir, `${slug}.mdx`);
 
   if (!fs.existsSync(filePath)) {
+    console.error(`Blog post not found: ${filePath}`);
     return null;
   }
 
   try {
     const fileContent = fs.readFileSync(filePath, "utf-8");
-    const mdxSource = await baseSerialize(fileContent);
+    const mdxSource = await baseSerialize(fileContent, `blog/${slug}.mdx`);
     if (frontmatterOnly) {
       return mdxSource.frontmatter as MDXFrontmatter;
     }
     return mdxSource;
-  } catch {
+  } catch (error) {
+    console.error(`Error processing blog post "${slug}":`, error);
+    if (error instanceof Error) {
+      console.error(`  Details: ${error.message}`);
+    }
     return null;
   }
 }

@@ -20,7 +20,19 @@ export async function generateMetadata() {
   return {
     title: frontmatter.title,
     description: frontmatter.summary,
+    alternates: {
+      canonical: "https://ionicargon.ca/about",
+    },
     openGraph: {
+      type: "website",
+      url: "https://ionicargon.ca/about",
+      siteName: "IonicArgon",
+      locale: "en_US",
+      title: frontmatter.title,
+      description: frontmatter.summary,
+    },
+    twitter: {
+      card: "summary_large_image",
       title: frontmatter.title,
       description: frontmatter.summary,
     },

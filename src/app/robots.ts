@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
     },
-    sitemap: "https://ionicargon.com/sitemap.xml",
+    sitemap: "https://ionicargon.ca/sitemap.xml",
   };
 }
