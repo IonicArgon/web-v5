@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/discord-rss-webhook",
-      "schedule": "0 4 * * *"
+      "schedule": "0 0 * * *"
     }
   ]
 }
