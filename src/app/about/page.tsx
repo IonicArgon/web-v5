@@ -21,11 +21,11 @@ export async function generateMetadata() {
     title: frontmatter.title,
     description: frontmatter.summary,
     alternates: {
-      canonical: "https://ionicargon.ca/about",
+      canonical: "https://www.ionicargon.ca/about",
     },
     openGraph: {
       type: "website",
-      url: "https://ionicargon.ca/about",
+      url: "https://www.ionicargon.ca/about",
       siteName: "IonicArgon",
       locale: "en_US",
       title: frontmatter.title,

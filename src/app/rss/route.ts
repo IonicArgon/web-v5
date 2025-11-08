@@ -33,7 +33,7 @@ export async function GET(_request: Request) {
       return `
       <item>
         <title>${post.frontmatter.title}</title>
-        <link>https://ionicargon.ca/blog/${post.slug}</link>
+        <link>https://www.ionicargon.ca/blog/${post.slug}</link>
         <pubDate>${publishedDate}</pubDate>
         <description>${post.frontmatter.summary}</description>
       </item>
@@ -45,7 +45,7 @@ export async function GET(_request: Request) {
   <rss version="2.0">
     <channel>
       <title>IonicArgon Blog</title>
-      <link>https://ionicargon.ca</link>
+      <link>https://www.ionicargon.ca</link>
       <description>Marco Tan's blog posts.</description>
       ${rssItems}
     </channel>

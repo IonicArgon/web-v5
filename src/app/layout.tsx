@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     default: "IonicArgon",
   },
   description: "Personal website and blog of Marco Tan.",
-  metadataBase: new URL("https://ionicargon.ca"),
+  metadataBase: new URL("https://www.ionicargon.ca"),
   openGraph: {
     type: "website",
     siteName: "IonicArgon",
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
   },
-  authors: [{ name: "Marco Tan", url: "https://ionicargon.ca" }],
+  authors: [{ name: "Marco Tan", url: "https://www.ionicargon.ca" }],
   creator: "Marco Tan",
   keywords: ["IonicArgon", "Marco Tan", "blog", "software"],
   robots: { index: true, follow: true },
