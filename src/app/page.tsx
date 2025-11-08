@@ -20,7 +20,7 @@ export async function generateMetadata() {
     title: frontmatter.title,
     description: frontmatter.summary,
     alternates: {
-      canonical: "https://www.www.ionicargon.ca/",
+      canonical: "https://www.ionicargon.ca/",
     },
     openGraph: {
       type: "website",

@@ -29,7 +29,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     )
     .map((post): MetadataRoute.Sitemap[number] => {
       return {
-        url: `https://www.www.ionicargon.ca/blog/${post.slug}`,
+        url: `https://www.ionicargon.ca/blog/${post.slug}`,
         lastModified: new Date(
           post.frontmatter.lastUpdatedAt ?? post.frontmatter.publishedAt,
         ).toISOString(),
@@ -50,7 +50,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       const fileContent = await fs.promises.readFile(filePath, "utf-8");
       const mdxContent = await baseSerialize(fileContent);
       const frontmatter = mdxContent.frontmatter as MDXFrontmatter;
-      const url = `https://www.www.ionicargon.ca/${page}`;
+      const url = `https://www.ionicargon.ca/${page}`;
       const isHome = page === "";
       return {
         url,
