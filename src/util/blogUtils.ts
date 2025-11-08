@@ -17,6 +17,7 @@ export async function getBlogPostBySlug(
   slug: string,
   frontmatterOnly = false,
 ): Promise<MDXRemoteSerializeResult | MDXFrontmatter | null> {
+  "use cache";
   const blogDir = path.join(process.cwd(), "src", "content", "blog");
   const filePath = path.join(blogDir, `${slug}.mdx`);
 

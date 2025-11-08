@@ -5,7 +5,7 @@ import { ClientMDX } from "@/components/ClientMDX";
 import { baseSerialize, type MDXFrontmatter } from "@/util/baseSerialize";
 
 async function getHomeContent() {
-  // 'use cache';
+  "use cache";
   const filePath = path.join(process.cwd(), "src", "content", "home.mdx");
   const fileContent = fs.readFileSync(filePath, "utf-8");
   const mdxSource = await baseSerialize(fileContent);
@@ -25,7 +25,7 @@ export async function generateMetadata() {
     openGraph: {
       type: "website",
       url: "https://ionicargon.ca/",
-      siteName: "IonicArgon",
+      siteName: "IonicArgon - Marco's corner of the internet",
       locale: "en_US",
       title: frontmatter.title,
       description: frontmatter.summary,

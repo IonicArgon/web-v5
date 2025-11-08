@@ -6,7 +6,7 @@ import type { MDXFrontmatter } from "@/util/baseSerialize";
 import { baseSerialize } from "@/util/baseSerialize";
 
 async function getAboutContent() {
-  // 'use cache';
+  "use cache";
   const filePath = path.join(process.cwd(), "src", "content", "about.mdx");
   const fileContent = fs.readFileSync(filePath, "utf-8");
   const mdxSource = await baseSerialize(fileContent);
