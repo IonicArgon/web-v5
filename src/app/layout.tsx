@@ -41,7 +41,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${quicksand.className} antialiased min-h-screen`}>
         <Navbar />
-        <main className="w-full max-w-prose mx-auto px-4 sm:px-6 md:px-8 pt-14 md:pt-6 md:ml-64 min-h-screen">
+        <main className="w-full max-w-1/2 mx-auto px-4 sm:px-6 md:px-8 pt-14 md:pt-6 md:ml-64 min-h-screen">
           <div className="mdx">{children}</div>
         </main>
       </body>

@@ -1,0 +1,231 @@
+---
+title: "Over-Engineering vs. Impact: The RCC Project"
+summary: "An honest look at our IBEHS 4P03 consultancy project for the Rehabilitation Centre for Children."
+publishedAt: 2025-11-30
+lastUpdatedAt: 2025-11-30
+tags: ['blog', 'university', 'consulting']
+---
+
+# Over-Engineering vs. Impact: The RCC Project
+
+Hi, it's been a while since I've been able to write another blog post. A little funny since the entire point of me redesigning my homepage was to get me to write more consistently, but things tend to get busy during this time of the year.
+
+Speaking of busy, one thing that has really kept me on my toes is this course I've been taking this fall semester at McMaster: **IBEHS 4P03 - Health Solutions Design Projects IV.** The `XP##` courses are these project-based courses, of which I take one each year, and they're meant for us to learn about and apply non-technical engineering skills while collaborating with other students in different engineering streams.
+
+This year's course focused on project management and consultancy with the project focused around the **Rehabilitation Centre for Children (RCC)**[^1], a non-profit organization based in Winnipeg, Manitoba whose mission is to:
+
+> [...] supports children and youth in discovering their potential and engaging in their communities, through excellence in innovative clinical services, assistive technologies, education, and research.
+
+Essentially, they help children with different mental and physical needs through a combination of physiotherapy, occupational therapy, and specialized equipment that they produce/modify and test in-house. For instance, they might adapt toys with custom switches more readily accessible by a child, like below:
+
+![A slide from their deck, showing children's toys with modified switches.](/blog/ibehs-4p03-rcc-consultancy/slide.png)
+*Fig 1. Slide from their deck, showing children's toys with modified switches.*
+
+We were given problem statements from the RCC, from which our assigned groups were to research, develop, and propose a solution, as we acted as consultants.
+
+Initially, I was very excited: I thought it was cool that we were bringing theory out of the classroom and getting to apply it with a real stakeholder, and that by doing this, we could enact some positive change.
+
+That enthusiasm was immediately tested when we received our specific mandate. We were asked to design a mobile battery testing system, a challenge that seemed technically straightforward on paper. But as we soon discovered, the most effective engineering solutions often require questioning the premise of the problem itself.
+
+## A solution in search of a problem...
+
+So, here's the specific scope we were given, a few points removed here and there for brevity:
+
+> The electronics department [...] works with a wide range of technologies, each powered by different types of batteries. Device **failures** [...] traced to **faulty or depleted batteries** [...] power sources are **bulky, heavy, and difficult to transport** [... ] moving batteries back and forth [from the appointment rooms to the lab] for testing can be **inefficient and cause delays**. These challenges are further compounded during home visits.
+
+The scope paints a pretty clear picture of what their issues are. I can summarize it as: **batteries fail often and need to be tested, but testing with what they currently have is slow and laborious.** So, it makes sense then that the initial project scope states that they want a mobile approach to battery that can take the form of a new device or some sort of diagnostic toolkit, to help improve the efficiency of the process.
+
+However, this was a pretty big mistake in hindsight: assuming that the initial problem we were given was the *right* problem. What I mean by this is, although we were operating under the assumption that all of the scopes were vetted, in real life, engineers don't just take the problem at face value. Doing so would be a lack of due diligence on the engineer's part as you might end up going on a wild goose chase solving the misidentified problem, or even worse, patching a symptomatic problem while the root cause is left unaddressed.
+
+We went into our first Community Partner visit under this false assumption. Our Community Partner, Stephen Klatt, is a technologist at the RCC who works closely with batteries for all kinds of devices and equipment that they service. During this first meeting, we noted the following:
+
+- They use a variety of batteries, but the primary ones we're concerned with are the **rechargeable, sealed lead acid batteries** used on powered wheelchairs and Power Wheels-branded ride-on toy cars.
+- Said batteries are **stored in a big charging room** with smart plugs.
+- Said batteries are tested for a couple of metrics, but **mainly voltage and load testing**, and it's **not that in-depth**.
+- The primary cause of failure is actually **user failure**, where families who borrow this equipment **abuse the batteries** by not adhering to charging protocols.
+
+Sounds reasonable. However, this session didn't fully answer all of our questions, especially pertaining to the mobility and alleged clunkiness of the current testing procedures. Our team decided to shoot him an email with a few follow-ups, from which we learned:
+
+- The current device they use to test batteries is a **BK Precision 8540 150W DC Electronic Load Power Source**, a power supply that also has load testing capabilities.
+- Having been at the RCC for only **5 months**, Stephen noted **7 failed batteries**, some of which were old stock from not having an existing battery maintenance schedule.
+- It takes about **4 - 6 hours to test** all the batteries on site.
+- They only have **24 - 29** of these lead acid batteries at any given time.
+- They **don't keep logs on battery failures** as they're considered consumables and aren't tracked the same way over devices in their inventory are tracked.
+
+This starts to peel back the layers of the onion. Firstly, we did some research on the load tester that they use. Below is the device in question:
+
+![The BK Precision load tester they use.](/blog/ibehs-4p03-rcc-consultancy/8540.png)
+*Fig 2. BK Precision load tester.*
+
+The data sheet for this device states that it only weighs about 6 lbs, with dimensions that would make it a little thinner than two Nintendo Wiis stacked side-by-side. Here's an image from the data sheet[^2] itself:
+
+![Data sheet screenshot from DigiKey website of the BK load tester.](/blog/ibehs-4p03-rcc-consultancy/datasheet.png)
+*Fig 3. Screenshot of dimension and weight specifications per the official data sheet.*
+
+So, the device itself is **not actually that heavy, nor is it that large**. It would already be sufficiently mobile to move back and forth between appointment rooms and their electronics lab. However, from the information we've gathered, that **isn't even something they do**: if a battery appears to be dead during an appointment, they walk the battery back to the lab and grab a new one.
+
+From the number of batteries and the hours of testing, we estimated that it would take at best, 8 minutes and at worst, 15 minutes, to test each battery, not accounting for walking distance to and from the lab, and assuming one individual testing a battery. Testing the batteries themselves didn't seem like it'd consume so much time to warrant it an issue.
+
+What's more pressing is that we learned that they **do not inventory and log their batteries like other devices**. Without proper tracking, staff at the RCC wouldn't actually know whether the batteries in storage are dead or working.
+
+All of these points suggest that maybe it **isn't the device itself** that's causing their problems, but the **lack of a proactive management and inventory process**.
+
+## So what's actually behind the mask?
+
+With this in mind, we entered into our second Community Partner meeting with Stephen, hoping to put to rest our burning question: **was the mobility of the testing device actually a problem?** One of my teammates asked that directly and...
+
+...Yep, it wasn't actually a problem, not directly anyway.
+
+What Stephen told us was:
+
+- They're **not maintaining their inventory at all**. When he needs a battery, he'll look around and **test at random** until he finds a working battery.
+- The **tester does actually have to stay in the lab** as it's used on their test bench for other tasks, so they can't relocate it, not that they did to begin with.
+- **No information is kept** about whether batteries were poorly maintained, with documentation being in the form of sticky notes with random voltages that don't dictate battery health.
+- The way he tests batteries will differ from how another technologist might test a battery, so the **procedures for testing are not standardized**.
+- He suspects that portability of the testing device could be a reason why they're neglecting the batteries, but he thinks a **formal testing system** would **better address** the root issue.
+- Such a procedural change would be a **"huge benefit to the department."**
+
+So in actuality, their problem was the **lack of standardized testing procedure**, not that the device used was too immobile for testing.
+
+### Problem solved, then! Unfortunately...
+
+As consultants, our group wanted to recommend the most simple, straightforward solution: standardize the protocol, document it, and start inventorying the batteries. They could've done this simply by:
+
+- Creating a shared cloud drive with procedure documents and inventory stored together.
+- Used online documents to note down the protocol, making them easily accessible.
+- Used a spreadsheet as battery inventory management.
+
+This would've solved the tracking issue, cost $0, and requires no complex maintenance.
+
+**However...**
+
+This is where the academic nature of the project clashed with real-world consulting. Although our problem pivot was well-received, our Project Managers (course TAs) noted a critical issue: you can't exactly perform an economic analysis on something that's free, and a plain spreadsheet isn't really *"innovative"* enough.
+
+The process improvement solution is completely sound, it just didn't fit within the course requirements. We still wanted to pitch this solution to the RCC because we believed, as did Stephen, that this was the much-needed change their department required. We just needed a way to... *make it more expensive*.
+
+### I guess we'll use a sledgehammer to crack a walnut
+
+After some brainstorming, we noted that a somewhat reasonable way to add some heft to the project would be to embody the role of a modern, senior project manager at Microsoft and...
+
+*...stuff artificial intelligence into the product.*
+
+We opted to convert the simple spreadsheet into a **full-stack, AI-integrated, battery inventory management web application**. The app would centralize their data and testing procedures, but go a step beyond and automate the testing schedules, and predict battery health based on historical data points. This isn't actually as far-fetched as it seems and has some precedent already:
+
+- Neural networks and their derivatives excel at capturing non-linear trends compared to traditional, physics-driven models. In fact, the National Renewable Energy Laboratory (NREL) in the United States has been *studying these models for a while*[^3].
+- AI is already used extensively in inventory management for anomaly detecting, forecasting, and replenishment predictions, as IBM[^4] and McKinsey[^5] already notes.
+
+So, it actually did make *some* sense to integrate AI into this process improvement solution, since such a model could be used to better predict battery health and streamline their testing operations.
+
+Was it *"innovative?"*
+
+I'd say so, yes.
+
+Did it cost more money than "free?"
+
+**Absolutely.**
+
+Was it necessary?
+
+**Absolutely not.**
+
+But, it gives us something to analyze. With this, I set forth to conduct the economic analysis of the two action plans we drafted up: in-house development vs. outsourcing to an Agile team.
+
+## Alright, what's the damage?
+
+As part of the project requirements, we had to compare a primary and alternative action plan through a variety of methods. I focused primarily on the economic analysis of the two plans we had in mind:
+
+1. **In-House Development:** The RCC uses existing staff to build and maintain the system.
+2. **Outsourced Agile Team:** The RCC contracts a third-party firm for the build, retaining only maintenance duties.
+
+I opted to conduct the economic analysis using Net Present Value (NPV) as it would be the simplest way to compare the two projects: we just have to calculate the net receipts and disbursements, then bring them to the present. The formula I used was the following:
+
+$$
+\text{NPV} = \sum_{i=0}^N \frac{F_i}{(1+i)^n}
+$$
+
+where:
+
+- $$i$$ is the compounding period.
+- $$N$$ is the total number of periods.
+- $$F_i$$ is the net future cash flow at that period.
+- $$n$$ is the interest rate per period (calculated by dividing the MARR over $$N$$).
+
+To conduct this economic analysis, I had to make a lot of assumptions, many of which were quite unrealistic in hindsight (I reflect on this later). I don’t want to include all of them here since it’d take up a lot of unnecessary space but to put it simply:
+
+*Table I. List of assumptions for the different action plans.*
+
+|**Primary Action Plan**|**Alternative Action Plan**|**Both**|
+|--|--|--|
+|They’d fine-tune a pre-trained, time-series model, *Chronos-2*[^6].|It’d be a team in Canada, with salaries roughly estimated from Canadian averages.|They’d use Amazon Web Services (AWS) for their cloud infrastructure, since it’s the provider with the most market share as of writing this.|
+|Made heavy assumptions on the task lengths based on professional judgement, to determine the cost of development, trying to account for work being done in employee off-time.|The team would require a technical project manager, UX designer, full-stack developer, and machine-learning engineer.|Made very conservative estimates on app usage, usage growth, and data set growth.|
+|The fine-tuned model would be sufficient out-of-the-box as they began data collection.|Assume one year of app development, with another year of data collection and model design, training, and deployment.|We would project four years into the future, which gives at least two years of active use in both projects.|
+|Someone at the RCC actually knows full-stack development.|The RCC would take out a CSBFP loan to bankroll the operation (as the initial seed grant of CA$3k is not even remotely enough).|We used an MARR of 8%, which was given to us in the project details.|
+|The RCC has the IT support required to maintain such a system.|The loan would be paid back in monthly installments over ten years, right at the first month, without considering how they’d actually find the money to do it.|I quantified the time saved as an annuity based on estimated hourly savings and the average technologist salary in Manitoba.|
+
+With this, here’s the cash flow for the Primary Action Plan. The NPV for this plan was **CA$27,153.50**.
+
+![Cash flow diagram for the Primary Action Plan over four years](/blog/ibehs-4p03-rcc-consultancy/primaction.png)
+*Fig 4. Cash flow diagram of the Primary Action Plan over 48 months.*
+
+Here’s the cash flow for the Alternative Action Plan, with an NPV of **-CA$179,939,59**.
+
+![Cash flow diagram for the Primary Action Plan over four years](/blog/ibehs-4p03-rcc-consultancy/altaction.png)
+*Fig 5. Cash flow diagram of the Alternative Action Plan over 48 months.*
+
+![funny meme haha](/blog/ibehs-4p03-rcc-consultancy/inthered.jpg)
+*Fig 6. yeah that alternative was never going to work*
+
+On paper, **In-House Development** was the clear winner as it showed a positive return by avoiding the massive upfront capital expenditure of hiring an external firm. The math tells the RCC that they should build this AI app themselves.
+
+But spreadsheets do not tell the whole story.
+
+## We have to cash in the reality check
+
+The math suggests that the RCC should *immediately* begin developing an in-house, AI-augmented battery management system. The NPV is positive, the returns are reasonable, and the "innovation" box is checked.
+
+However, as engineers, we can’t just look at the numbers; we have to look at the client.
+
+The biggest shortcoming of the Primary Action Plan economic analysis is that it relies heavily on the **assumption that the RCC possesses the "development prowess"** required to build and maintain a complicated, full-stack architecture like this one. A small non-profit, without a dedicated, internal development team, nor the supporting teams (like DevOps, IT, etc.) required to maintain such a system, would surely be unable to feasibly implement this plan.
+
+There are other limitations to the economic analysis as well:
+
+- We assumed that a pre-trained model would be sufficient for their use case so long as we trained it on open-source data, but the model would **likely be incompatible** with the batteries they have and would be **massively inaccurate** until enough data is collected for further refinement.
+- We also only quantified the amount of time saved given that the app is built well and functions as intended. We **never account** for the **overhead of maintaining** the app, nor the development, as monetary quantities.
+- We also had to make many assumptions on cloud service usage. From my personal experience, I can attest that this app would probably end up staying within free usage tiers of most services for its foreseeable lifespan, but we **don’t know how large the RCC would scale** in the future.
+- The Alternative Action Plan used averaged Canadian salaries for the identified, critical Agile team members, but outsourcing of development is typically done through **development firms** who will **have their own rates**, potentially higher than the national average. It also doesn’t account for **any other fees** that would be tacked on to the whole project.
+- Finally, the Alternative Action Plan assumes that the RCC would take out a $450,000 loan **without any feasible repayment plan**. As we all know, the Iron Bank will have its due[^7].
+
+Blindly following the economic analysis would’ve resulted in us handing over a complex software development plan to a small non-profit. If they even manage to build the app, chances are it would probably break within months of initial deployment and it would become a massive liability.
+
+### The final recommendation
+
+We decided to **recommend not pursuing** any of the proposed plans.
+
+Despite the positive economic indicators, we advised the RCC not to pursue app development. The risk of technical debt and operational burden on their small team **significantly outweighs** the theoretical efficiency gains of an AI model.
+
+We’re instead, recommending that they independently look into process improvements, particularly:
+
+- Formalization of the testing protocol.
+- Implementation of a simple spreadsheet inventory.
+
+Or, to put it more bluntly, we’re telling them "you don’t need to spend $3k nor $450k. You just need a Google Sheet. We can't tell you that directly, though."
+
+## So, what were the lessons learned?
+
+As unsatisfying as the ending of this project was, it did highlight a very distinct tension between engineering education and engineering practice. Academia wants to ensure us engineers are equipped with the theoretical skills required to evaluate real-world projects, but **real-world projects are seldom as simple** as following a set of criteria.
+
+Had we followed the course structure without critical thought, we would’ve ended up pitching a white elephant to the RCC simply because it satisfied a grade rubric.
+
+If the course structure did allow for "simple" solutions, we likely would’ve directly told them to implement the spreadsheet solution within the semester. That would’ve been interesting to see, since it could’ve provided us with the opportunity to test and refine that protocol in the real world and measure real time savings, rather than forecasting hypothetical ones in a cash flow.
+
+Ultimately, the biggest lesson learned is that with engineering, **sometimes the most valuable thing is to say "No."** By refusing to over-engineer the final solution, we ensured the RCC received advice that they could actually use, rather than a fantasy they couldn’t afford.
+
+To end it off, here's a [link to our final report](/blog/ibehs-4p03-rcc-consultancy/final-report.pdf) if you'd like a full read-up of the specific assumptions I made for our economic analysis.
+
+[^1]: You can find out more about them [here](https://rccinc.ca/).
+[^2]: The data sheet was found off of [DigiKey](https://www.digikey.ca/en/products/detail/b-k-precision/8540/1936377).
+[^3]: Here's the [media relations article](https://www.nrel.gov/news/detail/program/2025/artificial-intelligence-models-improve-efficiency-of-battery-diagnostics) from them. It's actually pretty interesting, their use of a surrogate DNN model for health predictions.
+[^4]: [Here's IBM](https://www.ibm.com/think/topics/ai-inventory-management) outlining how AI is used in numerous inventory mangement situations.
+[^5]: [Here's McKinsey's article](https://www.mckinsey.com/industries/industrials-and-electronics/our-insights/distribution-blog/harnessing-the-power-of-ai-in-distribution-operations) on AI inventory management.
+[^6]: SOTA multivariate time-series forecasting model from Amazon. You can find out more about it on their [Hugging Face model card page](https://huggingface.co/amazon/chronos-2).
+[^7]: I didn't actually watch [Game of Thrones](https://www.youtube.com/watch?v=-9Rya1JlUac) but I think I've watched enough clips to get a gist 🙃.
