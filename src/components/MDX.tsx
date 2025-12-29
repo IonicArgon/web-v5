@@ -87,22 +87,6 @@ function CustomLink(props: React.AnchorHTMLAttributes<HTMLAnchorElement>) {
   return <a {...props}>{props.children}</a>;
 }
 
-function SpotifyPlaylist({ playlistId }: { playlistId: string }) {
-  return (
-    <iframe
-      title="Spotify Playlist"
-      data-testid="embed-iframe"
-      className="rounded-lg mb-4"
-      src={`https://open.spotify.com/embed/playlist/${playlistId}?utm_source=generator`}
-      width="100%"
-      height="152"
-      allowFullScreen={false}
-      allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-      loading="lazy"
-    ></iframe>
-  );
-}
-
 function slugify(text: string) {
   return text
     .toString()
@@ -141,7 +125,6 @@ const components = {
   h3: createHeading(3),
   Render88x31Buttons: Render88x31Buttons,
   BlogList: BlogList,
-  SpotifyPlaylist: SpotifyPlaylist,
 };
 
 export function MDX({ mdxSource }: { mdxSource: MDXRemoteSerializeResult }) {
